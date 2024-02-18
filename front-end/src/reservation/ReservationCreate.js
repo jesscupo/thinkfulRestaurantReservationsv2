@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { createReservation } from "../utils/api";
 import { useHistory, Link } from "react-router-dom";
-
+import { formatDate } from "../utils/format-reservation-date"
 
 function ReservationCreate() {
 
@@ -37,10 +37,11 @@ function ReservationCreate() {
     
     createReservation(formData).then((newReservation)=>
     { 
+      const newDate = formatDate(newReservation)
       //restore form to blank
       setFormData({ ...initialFormState });
       //redirect to home
-      history.push(`/dashboard/?date=${newReservation.reservation_date}`)
+      history.push(`/dashboard/?date=${newDate.reservation_date}`)
     })
     
   };
