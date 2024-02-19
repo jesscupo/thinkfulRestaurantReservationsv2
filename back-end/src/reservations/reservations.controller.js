@@ -9,7 +9,8 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 function notATuesday(req, res, next) {
   const { data: { reservation_date, reservation_time } = {} } = req.body;
   res.locals.datetime = new Date(reservation_date + ' ' + reservation_time);
-  
+  res.locals.time = reservation_time;
+
   if (res.locals.datetime.getDay() != 2) {
     return next();
   }
@@ -19,10 +20,9 @@ function notATuesday(req, res, next) {
   });
 }
 
-
 //confirm date is not in the past
 function dateInPast(req, res, next) {
-  if (res.locals.datetime  >= new Date()) {
+  if (res.locals.datetime >= new Date()) {
     return next();
   }
   next({
@@ -30,6 +30,18 @@ function dateInPast(req, res, next) {
     message: `The reservation date is in the past.`,
   });
 }
+
+//confirm time is in allowed range
+function validTimes(req, res, next) {
+  if (res.locals.time >= "10:30:00" && res.locals.time <= "21:30:00") {
+    return next();
+  }
+  next({
+    status: 400,
+    message: `Invalid reservation time.`,
+  });
+}
+
 
 //confirm reservations exist for this day
 async function reservationsExist(req, res, next) {
@@ -58,7 +70,7 @@ async function list(req, res) {
 }
 
 /**
- * post handler for creating new reservations
+ * post for creating new reservations
  */
 async function create(req, res) {
   const results = await service.create(req.body.data);
@@ -68,5 +80,5 @@ async function create(req, res) {
 
 module.exports = {
   list: [asyncErrorBoundary(reservationsExist), asyncErrorBoundary(list)],
-  create: [asyncErrorBoundary(notATuesday), asyncErrorBoundary(dateInPast), asyncErrorBoundary(create)]
+  create: [asyncErrorBoundary(notATuesday), asyncErrorBoundary(dateInPast), asyncErrorBoundary(validTimes), asyncErrorBoundary(create)]
 };

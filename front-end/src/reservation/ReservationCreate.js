@@ -19,7 +19,6 @@ function ReservationCreate() {
   const [formData, setFormData] = useState({ ...initialFormState });
 
   const [errors, setErrors] = useState([])
-  
 
 //set form data on change
   const handleChange = ({ target }) => {
@@ -34,6 +33,7 @@ function ReservationCreate() {
   const handleCancel = async (event) => {
     history.goBack()
   }
+
 
   //on submit, save the new reservation and then redirect to the /dashboard page
   const handleSubmit = async (event) => {
@@ -52,8 +52,10 @@ function ReservationCreate() {
       setErrors(errors => [...errors,"Restaurant is closed on Tuesdays."] ); 
     }
 
-    //if no errors, submit form
-    else {
+    if (formData.reservation_time < "10:30:00" || formData.reservation_time > "21:30:00") {
+      setErrors(errors => [...errors, "Reservation must be between 10:30am - 9:30pm."])
+    }
+
     createReservation(formData).then((newReservation)=>
     { console.log(newReservation)
       const newDate = formatDate(newReservation)
@@ -61,14 +63,15 @@ function ReservationCreate() {
       setFormData({ ...initialFormState });
       //redirect to home
       history.push(`/dashboard/?date=${newDate.reservation_date}`)
-    })
-    }
+      //log api errors
+    }).catch((error) => {console.log(error) })
+
   };
 
   //map errors to separate p elements for display
   let errorsList = [];
   if (errors.length) 
-  {errorsList = errors.map((error) => <p className="alert alert-danger">{error}</p>);}
+  {errorsList = errors.map((error, index) => <p  key={index} className="alert alert-danger">{error}</p>);}
 
 
   //display of form elements
