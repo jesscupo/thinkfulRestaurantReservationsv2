@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import Reservation from "../reservation/Reservation"
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {previous, next} from "../utils/date-time"
 import sortReservationsByTime from "../utils/sortReservationsByTime"
 
@@ -13,8 +13,6 @@ import sortReservationsByTime from "../utils/sortReservationsByTime"
  * @returns {JSX.Element}
  */
 function Dashboard( {date} ) {
-
-  const { url } = useRouteMatch();
 
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createReservation } from "../utils/api";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { formatDate } from "../utils/format-reservation-date"
 
 function ReservationCreate() {
@@ -18,8 +18,12 @@ function ReservationCreate() {
 
   const [formData, setFormData] = useState({ ...initialFormState });
 
+  const [errors, setErrors] = useState([])
+  
+
 //set form data on change
   const handleChange = ({ target }) => {
+    setErrors([])
     setFormData({
       ...formData,
       [target.name]: target.value,
@@ -34,17 +38,38 @@ function ReservationCreate() {
   //on submit, save the new reservation and then redirect to the /dashboard page
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
+    //initialize errors to empty again
+    setErrors([])    
+    //create var for reservation time in datetime format
+    const reservationDateTime = new Date(formData.reservation_date + ' ' + formData.reservation_time)
+    //validate reservation datetime is in the future
+    if (reservationDateTime <= new Date()) {
+      setErrors(errors => [...errors,"Date must be in the future."] );
+       }
+    //validate reservation day is not a tuesday
+    if (reservationDateTime.getDay() === 2) {
+      setErrors(errors => [...errors,"Restaurant is closed on Tuesdays."] ); 
+    }
+
+    //if no errors, submit form
+    else {
     createReservation(formData).then((newReservation)=>
-    { 
+    { console.log(newReservation)
       const newDate = formatDate(newReservation)
       //restore form to blank
       setFormData({ ...initialFormState });
       //redirect to home
       history.push(`/dashboard/?date=${newDate.reservation_date}`)
     })
-    
+    }
   };
+
+  //map errors to separate p elements for display
+  let errorsList = [];
+  if (errors.length) 
+  {errorsList = errors.map((error) => <p className="alert alert-danger">{error}</p>);}
+
 
   //display of form elements
   return (
@@ -71,7 +96,7 @@ function ReservationCreate() {
             onChange={handleChange}
             value={formData.first_name}
             placeholder="First Name"
-            required="true"
+            required={true}
           />
         </td>
         <td> 
@@ -81,7 +106,7 @@ function ReservationCreate() {
             onChange={handleChange}
             value={formData.last_name}
             placeholder="Last Name"
-            required="true"
+            required={true}
           />
         </td>      
         <td> 
@@ -91,7 +116,7 @@ function ReservationCreate() {
             onChange={handleChange}
             value={formData.mobile_number}
             placeholder="123-456-7890"
-            required="true"
+            required={true}
           />
         </td> 
         <td> 
@@ -102,7 +127,7 @@ function ReservationCreate() {
             name="reservation_date"
             onChange={handleChange}
             value={formData.reservation_date}
-            required="true"
+            required={true}
           />
         </td>                     
         <td> 
@@ -113,7 +138,7 @@ function ReservationCreate() {
             name="reservation_time"
             onChange={handleChange}
             value={formData.reservation_time}
-            required="true"
+            required={true}
           />
         </td>
         <td> 
@@ -123,7 +148,7 @@ function ReservationCreate() {
             onChange={handleChange}
             value={formData.people}
             placeholder="#"
-            required="true"
+            required={true}
           />
         </td>        
             <td>
@@ -133,6 +158,9 @@ function ReservationCreate() {
           </tr>
         </tbody>
       </table>
+      <div>
+        {errorsList}
+        </div>
     </form>
     </div>
   );
