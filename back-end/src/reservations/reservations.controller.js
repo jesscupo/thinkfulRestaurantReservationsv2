@@ -1,9 +1,6 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
-/**
- * List handler for reservation resources
- */
 
 //confirm that date is not a tuesday
 function notATuesday(req, res, next) {
@@ -61,12 +58,20 @@ async function reservationsExist(req, res, next) {
   return next({ status: 404, message: `No Reservations on this day.` });
 }
 
+/**
+ * List handler for reservation resources
+ */
 
 async function list(req, res) {
   const results = res.locals.reservations
-  //const results = await service.list(date);
   res.json({ data: results });
+}
 
+//read handler for reading one reservation by ID
+async function read(req, res) {
+  const { reservationId } = req.params;
+  const results = await service.read(reservationId);
+  res.json({data:results})
 }
 
 /**
@@ -77,8 +82,19 @@ async function create(req, res) {
   res.json({ data: results });
 }
 
+async function updateStatus(req, res) {
+  const { reservationId } = req.params;
+  const newStatus = {
+      ...req.body.data
+      };
+  const result = await service.updateStatus(reservationId, newStatus);
+  res.json({ data: result });
+}
+
 
 module.exports = {
+  updateStatus: asyncErrorBoundary(updateStatus),
+  read: [asyncErrorBoundary(read)],
   list: [asyncErrorBoundary(reservationsExist), asyncErrorBoundary(list)],
   create: [asyncErrorBoundary(notATuesday), asyncErrorBoundary(dateInPast), asyncErrorBoundary(validTimes), asyncErrorBoundary(create)]
 };

@@ -1,16 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const Reservation = ({ reservation }) => {
 
-  /*
-  const handleDelete = async () => {
-    const result = window.confirm("Are you sure you want to delete this card?");
-    if (result) {
-      await deleteCard(cardId);
-    }
-    history.go(0);
-  };
-*/
     return (
     <div className="card">
       <div className="card-body">
@@ -22,7 +14,12 @@ export const Reservation = ({ reservation }) => {
         <p className="card-text">{reservation.people}</p>
         <p className="card-text">{reservation.updated_at}</p>
         <p className="card-text">{reservation.created_at}</p>
-      </div>
+        <p data-reservation-id-status={reservation.reservation_id} className="card-text">{reservation.status}</p>
+        <div> {reservation.status === 'booked' 
+              ? <Link to={`/reservations/${reservation.reservation_id}/seat`} className="btn btn-primary">Seat</Link>    
+              : "" }
+        </div>
+     </div>
     </div>
     );
   

@@ -5,12 +5,16 @@
  */
 
 const router = require("express").Router();
-const controller = require("./reservations.controller");
+const controller = require("./tables.controller");
 
 router.route("/").get(controller.list).post(controller.create)
 
-router.route("/:reservationId/status").put(controller.updateStatus)
+router.route("/:tableId/seat").delete(controller.delete)
 
-router.route("/:reservationId").get(controller.read)
+router
+  .route("/:tableId")
+  .get(controller.read)
+  .put(controller.update)
+
 
 module.exports = router;
