@@ -10,6 +10,7 @@ function ReservationEdit() {
     const [errors, setErrors] = useState([])
     const [formData, setFormData] = useState([]);
 
+//function to read the reservation data by ID, then load it into the form fields    
     function loadFormData() {
         const abortController = new AbortController();
         readReservation(reservationId, abortController.signal).then((reservation)=> 
@@ -21,6 +22,7 @@ function ReservationEdit() {
         return () => abortController.abort();
     }
 
+//load the reservation data by ID on page load
     useEffect(loadFormData, [reservationId]);
 
     const handleChange = ({ target }) => {
@@ -35,6 +37,7 @@ function ReservationEdit() {
         history.goBack()
     }
 
+//function for form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 

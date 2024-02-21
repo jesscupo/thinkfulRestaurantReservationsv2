@@ -29,6 +29,7 @@ function update(updatedTable) {
   .then((updatedTable) => updatedTable[0]);
 }
 
+//remove reservation from table by setting reservation ID to null
 function destroy(tableId) {
   return knex("tables")
   .where({ table_id: tableId })

@@ -6,7 +6,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 
 
 function TableSeat() {
-
+//get reservation ID from URL params
   const { reservationId } = useParams();
 
   const history = useHistory();
@@ -46,6 +46,7 @@ function TableSeat() {
     return () => abortController.abort();
   }
 
+//on page load, load the tables for select list, sort the list by name
   useEffect(loadTables);
   tables.sort(sortTablesByName)
   let tableList = []

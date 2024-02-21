@@ -7,14 +7,17 @@ import { useHistory } from "react-router-dom";
 export const Reservation = ({ reservation }) => {
   const history = useHistory();
 
+//handler for clicking cancel button
   const handleCancel = async () => {
     const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
     if (result) {
       try {
+//update the reservation status to cancelled if user confirms dialog window        
       await updateReservationStatus(reservation.reservation_id, {status:"cancelled"}) }
       catch(error) {
         console.log(error)
       }
+//go back to home page      
       history.go(0)
   }
   }

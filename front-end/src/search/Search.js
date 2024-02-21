@@ -25,7 +25,7 @@ function Search() {
   };
 
 
-  //on submit, save the new reservation and then redirect to the /dashboard page
+  //on submit, return search results by phone number and populate into searchResults
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -39,6 +39,7 @@ function Search() {
   if (errors.length) 
   {errorsList = errors.map((error, index) => <p  key={index} className="alert alert-danger">{error}</p>);}
 
+  //create reservation elements for list of results
   const resList = searchResults.map((reservation) => <Reservation key={reservation.reservation_id} reservation ={reservation} />);
 
 

@@ -5,16 +5,18 @@ import {deleteSeating, updateReservationStatus} from "../utils/api"
 export const Table = ({ table }) => {
   const history = useHistory();
 
-  
+  //function to handle Finish button
   const handleFinish = async () => {
     const result = window.confirm("Is this table ready to seat new guests? This cannot be undone.");
     if (result) {
       try {
+      //update the reservation status to Finished
       await updateReservationStatus(table.reservation_id, {status:"finished"}) }
       catch(error) {
         console.log(error)
       }
       try {
+      //delete the reservation ID from the corresponding table record (set to null)
       await deleteSeating(table.table_id);}
       catch(error) {console.log(error)}
 

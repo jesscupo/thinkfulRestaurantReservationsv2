@@ -22,9 +22,11 @@ function Dashboard( {date} ) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
 
+//on page load, load list of reservations and tables
   useEffect(loadDashboard, [date]);
   useEffect(loadTables, [date]);
 
+//function to load reservations
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -34,6 +36,7 @@ function Dashboard( {date} ) {
     return () => abortController.abort();
   }
 
+//function to load tables
   function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
@@ -43,6 +46,7 @@ function Dashboard( {date} ) {
     return () => abortController.abort();
   }
 
+//sort reservations by time; sort tables by name
   reservations.sort(sortReservationsByTime)
   tables.sort(sortTablesByName)
 

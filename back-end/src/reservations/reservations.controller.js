@@ -2,6 +2,17 @@ const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 
+//confirm all necessary fields are filled in
+function bodyDataHas(propertyName) {
+  return function (req, res, next) {
+    const { data = {} } = req.body;
+    if (data[propertyName]) {
+      return next();
+    }
+    next({ status: 400, message: `Reservation must include a ${propertyName}` });
+  };
+}
+
 //confirm that date is not a tuesday
 function notATuesday(req, res, next) {
   const { data: { reservation_date, reservation_time } = {} } = req.body;
@@ -76,7 +87,7 @@ async function create(req, res) {
   res.json({ data: results });
 }
 
-
+//update reservation with new data
 async function update(req, res) {
   const { reservationId } = req.params;
   const newData = {
@@ -88,8 +99,31 @@ async function update(req, res) {
 
 
 module.exports = {
-  update: [asyncErrorBoundary(notATuesday), asyncErrorBoundary(dateInPast), asyncErrorBoundary(validTimes), asyncErrorBoundary(update)],
+  update: [
+    bodyDataHas("first_name"), 
+    bodyDataHas("last_name"), 
+    bodyDataHas("mobile_number"), 
+    bodyDataHas("reservation_date"), 
+    bodyDataHas("reservation_time"), 
+    bodyDataHas("people"), 
+    asyncErrorBoundary(notATuesday), 
+    asyncErrorBoundary(dateInPast), 
+    asyncErrorBoundary(validTimes), 
+    asyncErrorBoundary(update)
+    ],
   read: [asyncErrorBoundary(read)],
   list: asyncErrorBoundary(list),
-  create: [asyncErrorBoundary(notATuesday), asyncErrorBoundary(dateInPast), asyncErrorBoundary(validTimes), asyncErrorBoundary(create)]
+  create: [
+    bodyDataHas("first_name"), 
+    bodyDataHas("last_name"), 
+    bodyDataHas("mobile_number"), 
+    bodyDataHas("reservation_date"), 
+    bodyDataHas("reservation_time"), 
+    bodyDataHas("people"), 
+    asyncErrorBoundary(notATuesday), 
+    asyncErrorBoundary(dateInPast), 
+    asyncErrorBoundary(validTimes), 
+    asyncErrorBoundary(create)
+      ]
+
 };

@@ -7,6 +7,7 @@ function list(date) {
     .whereNot("status", "finished")
   }
 
+//read reservation by ID
 function read(reservationId) {
   return knex("reservations").select("*")
   .where("reservation_id", reservationId)
@@ -28,7 +29,7 @@ function update(reservationId, updatedRes) {
   .then((updatedRes) => updatedRes[0]);
 }
 
-
+//return reservation by searching phone number
 function getByPhone(phoneNumber) {
   return knex("reservations")
     .whereRaw(
