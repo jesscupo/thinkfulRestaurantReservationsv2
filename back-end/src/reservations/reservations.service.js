@@ -20,8 +20,8 @@ function create(reservation) {
             .then((results) => results[0])
   }
   
-//update reservation status
-function updateStatus(reservationId, updatedRes) {
+//update reservation
+function update(reservationId, updatedRes) {
   return knex("reservations")
   .where({ reservation_id: reservationId })
   .update(updatedRes, ["*"])
@@ -29,8 +29,18 @@ function updateStatus(reservationId, updatedRes) {
 }
 
 
+function getByPhone(phoneNumber) {
+  return knex("reservations")
+    .whereRaw(
+      "translate(mobile_number, '() -', '') like ?",
+      `%${phoneNumber.replace(/\D/g, "")}%`
+    )
+    .orderBy("reservation_date");
+}
+
 module.exports = {
-    updateStatus,
+    getByPhone,
+    update,
     read,
     list,
     create,

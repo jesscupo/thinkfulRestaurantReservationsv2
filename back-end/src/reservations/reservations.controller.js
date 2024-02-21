@@ -40,32 +40,26 @@ function validTimes(req, res, next) {
 }
 
 
-//confirm reservations exist for this day
-async function reservationsExist(req, res, next) {
-  //set date var as the current days date
-  let date = new Date().getFullYear()+'-'+("0"+(new Date().getMonth()+1)).slice(-2)+'-'+("0"+new Date().getDate()).slice(-2);
-  //if the req has a date query parameter, set the date to this instead
-  if (req.query.date) {
-    date = req.query.date;
-  }
-  const results = await service.list(date);
-  //if reservations exist on this day, go to next
-  if (results) {
-    res.locals.reservations = results;
-    return next();
-  }
-  //else return error
-  return next({ status: 404, message: `No Reservations on this day.` });
-}
-
 /**
  * List handler for reservation resources
  */
 
 async function list(req, res) {
-  const results = res.locals.reservations
-  res.json({ data: results });
+  //if phone number in query, use the service to get results by phone number
+    if (req.query.mobile_number) {
+    const phoneNumber = req.query.mobile_number;
+    const results = await service.getByPhone(phoneNumber.replace(/-/g,""));
+    res.json({ data: results }); 
+  }
+  //otherwise, use today's date or get the date from the query
+  let date = new Date().getFullYear()+'-'+("0"+(new Date().getMonth()+1)).slice(-2)+'-'+("0"+new Date().getDate()).slice(-2);
+  if (req.query.date) {
+    date = req.query.date;
+  }
+  const results = await service.list(date);
+  res.json({ data: results});
 }
+
 
 //read handler for reading one reservation by ID
 async function read(req, res) {
@@ -82,19 +76,20 @@ async function create(req, res) {
   res.json({ data: results });
 }
 
-async function updateStatus(req, res) {
+
+async function update(req, res) {
   const { reservationId } = req.params;
-  const newStatus = {
+  const newData = {
       ...req.body.data
       };
-  const result = await service.updateStatus(reservationId, newStatus);
+  const result = await service.update(reservationId, newData);
   res.json({ data: result });
 }
 
 
 module.exports = {
-  updateStatus: asyncErrorBoundary(updateStatus),
+  update: [asyncErrorBoundary(notATuesday), asyncErrorBoundary(dateInPast), asyncErrorBoundary(validTimes), asyncErrorBoundary(update)],
   read: [asyncErrorBoundary(read)],
-  list: [asyncErrorBoundary(reservationsExist), asyncErrorBoundary(list)],
+  list: asyncErrorBoundary(list),
   create: [asyncErrorBoundary(notATuesday), asyncErrorBoundary(dateInPast), asyncErrorBoundary(validTimes), asyncErrorBoundary(create)]
 };

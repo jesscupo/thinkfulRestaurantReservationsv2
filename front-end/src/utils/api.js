@@ -69,7 +69,6 @@ export async function listReservations(params, signal) {
 }
 
 
-
 //list all tables
 export async function listTables(params, signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
@@ -139,6 +138,19 @@ export async function deleteSeating(tableId, data) {
   const url = `${API_BASE_URL}/tables/${tableId}/seat`;
   const options = {
     method: "DELETE",
+    headers,
+    body: JSON.stringify({ data }),
+  };
+  return await fetchJson(url, options, {});
+}
+
+
+
+//update reservation
+export async function updateReservation(reservationId, data) {
+  const url = `${API_BASE_URL}/reservations/${reservationId}`;
+  const options = {
+    method: "PUT",
     headers,
     body: JSON.stringify({ data }),
   };

@@ -1,7 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { updateReservationStatus } from "../utils/api";
+import { useHistory } from "react-router-dom";
+
 
 export const Reservation = ({ reservation }) => {
+  const history = useHistory();
+
+  const handleCancel = async () => {
+    const result = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
+    if (result) {
+      try {
+      await updateReservationStatus(reservation.reservation_id, {status:"cancelled"}) }
+      catch(error) {
+        console.log(error)
+      }
+      history.go(0)
+  }
+  }
 
     return (
     <div className="card">
@@ -19,6 +35,11 @@ export const Reservation = ({ reservation }) => {
               ? <Link to={`/reservations/${reservation.reservation_id}/seat`} className="btn btn-primary">Seat</Link>    
               : "" }
         </div>
+        <div> {reservation.status === 'booked' 
+              ? <Link to={`/reservations/${reservation.reservation_id}/edit`} className="btn btn-primary">Edit</Link>        
+              : "" }    
+        </div>
+        <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
      </div>
     </div>
     );
