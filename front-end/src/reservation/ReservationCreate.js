@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createReservation } from "../utils/api";
 import { useHistory } from "react-router-dom";
 import { formatDate } from "../utils/format-reservation-date"
+import reservationValidator from ".//ReservationValidator"
 
 function ReservationCreate() {
 
@@ -17,7 +18,7 @@ function ReservationCreate() {
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
-
+  const [apiError, setAPIError] = useState([undefined]);
   const [errors, setErrors] = useState([])
 
 //set form data on change
@@ -38,35 +39,25 @@ function ReservationCreate() {
   //on submit, save the new reservation and then redirect to the /dashboard page
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    let abortController = new AbortController();
     //initialize errors to empty again
     setErrors([])    
-    //create var for reservation time in datetime format
-    const reservationDateTime = new Date(formData.reservation_date + ' ' + formData.reservation_time)
-    //validate reservation datetime is in the future
-    if (reservationDateTime <= new Date()) {
-      setErrors(errors => [...errors,"Date must be in the future."] );
-       }
-    //validate reservation day is not a tuesday
-    if (reservationDateTime.getDay() === 2) {
-      setErrors(errors => [...errors,"Restaurant is closed on Tuesdays."] ); 
+
+    try {
+      const errors = await reservationValidator(formData);
+      setErrors(errors)
+      if (!errors.length) {
+        await createReservation(formData, abortController.signal)
+                .then((newRes)=>{
+                  const newDate = formatDate(newRes)
+                  history.push(`/dashboard/?date=${newDate.reservation_date}`)
+                })
+          }
     }
+    catch(apiError) {setAPIError(apiError)}
+    return () => abortController.abort();    
+    };
 
-    if (formData.reservation_time < "10:30:00" || formData.reservation_time > "21:30:00") {
-      setErrors(errors => [...errors, "Reservation must be between 10:30am - 9:30pm."])
-    }
-
-    createReservation(formData).then((newReservation)=>
-    { console.log(newReservation)
-      const newDate = formatDate(newReservation)
-      //restore form to blank
-      setFormData({ ...initialFormState });
-      //redirect to home
-      history.push(`/dashboard/?date=${newDate.reservation_date}`)
-      //log api errors
-    }).catch((error) => {console.log(error) })
-
-  };
 
   //map errors to separate p elements for display
   let errorsList = [];

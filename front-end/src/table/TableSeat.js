@@ -58,23 +58,18 @@ function TableSeat() {
   //on submit, save the new reservation and then redirect to the /dashboard page
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+    const abortController = new AbortController();
+
     //initialize errors to empty again
     setErrors([])
-    //update table to add reservation_id
-    updateTable(formData.table_id, {reservation_id: reservationId}).then((newSeating)=>
-    { 
-      //update reservation status to seated
-      updateReservationStatus(reservationId, {status: "seated"})
-                      .catch((apiErr) => {console.log(apiErr)})
-      //restore form to blank
-      setFormData({ ...initialFormState });
-      //redirect to dashboard
-      history.push(`/dashboard/`)
-      //log api errors
-    }).catch((apiErr) => {console.log(apiErr); setErrors(errors => [...errors, apiErr.message]) })
+    //update table to add reservation_id, update corresponding reservation status
+    try {
+    await updateTable(formData.table_id, {reservation_id: reservationId}, abortController.signal)
+    history.push(`/`)
     }
-
+    catch(error) {setErrors(errors => [...errors, error.message]) }
+    return () => abortController.abort();
+  }
 
   //map errors to separate p elements for display
   let errorsList = [];

@@ -5,12 +5,13 @@ function list(date) {
     return knex("reservations").select("*")
     .where("reservation_date", date)
     .whereNot("status", "finished")
+    .orderBy("reservation_time")
   }
 
 //read reservation by ID
 function read(reservationId) {
   return knex("reservations").select("*")
-  .where("reservation_id", reservationId)
+  .where("reservation_id", reservationId).first()
 }
 
 //create new reservation
@@ -18,8 +19,8 @@ function create(reservation) {
     return knex("reservations")
             .insert(reservation)
             .returning("*")
-            .then((results) => results[0])
-  }
+            .then((newRes) => newRes[0])
+  } 
   
 //update reservation
 function update(reservationId, updatedRes) {

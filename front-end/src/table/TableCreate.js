@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createTable } from "../utils/api";
 import { useHistory } from "react-router-dom";
+import tableValidator from ".//TableValidator"
 
 function TableCreate() {
 
@@ -12,7 +13,7 @@ function TableCreate() {
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
-
+  const [apiError, setAPIError] = useState([undefined])
   const [errors, setErrors] = useState([])
 
 //set form data on change
@@ -32,30 +33,25 @@ function TableCreate() {
 
   //on submit, save the new reservation and then redirect to the /dashboard page
   const handleSubmit = async (event) => {
+
     event.preventDefault();
-
+    let abortController = new AbortController();
     //initialize errors to empty again
-    setErrors([])
-    //validate table name is > 2 chars
-    if (formData.table_name.length < 2) {
-      setErrors(errors => [...errors,"Table name must be at least two characters."] );
-       }
-    //validate table capacity is at least 1
-    if (formData.capacity <= 1) {
-      setErrors(errors => [...errors,"Table capacity must be at least one."] ); 
+    setErrors([])    
+
+    try {
+      const errors = await tableValidator(formData);
+      setErrors(errors)
+      if (!errors.length) {
+        await createTable(formData, abortController.signal)
+                .then((newTable)=>{
+                  history.push(`/`)
+                })
+          }
     }
-
-
-    createTable(formData).then((newTable)=>
-    { console.log(newTable)
-      //restore form to blank
-      setFormData({ ...initialFormState });
-      //redirect to dashboard
-      history.push(`/dashboard/`)
-      //log api errors
-    }).catch((error) => {console.log(error) })
-
-  };
+    catch(apiError) {setAPIError(apiError)}
+    return () => abortController.abort();    
+    };
 
   //map errors to separate p elements for display
   let errorsList = [];

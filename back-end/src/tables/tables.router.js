@@ -9,12 +9,11 @@ const controller = require("./tables.controller");
 
 router.route("/").get(controller.list).post(controller.create)
 
-router.route("/:tableId/seat").delete(controller.delete)
+router.route("/:tableId/seat").delete(controller.delete).put(controller.update)
 
 router
   .route("/:tableId")
   .get(controller.read)
-  .put(controller.update)
 
 
 module.exports = router;

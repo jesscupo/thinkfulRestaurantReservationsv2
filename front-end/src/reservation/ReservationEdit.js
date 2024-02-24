@@ -2,20 +2,22 @@ import React,  { useEffect, useState } from "react";
 import { readReservation, updateReservation } from "../utils/api";
 import { useParams, useHistory } from "react-router-dom";
 import {formatDate} from "../utils/format-reservation-date"
+import reservationValidator from ".//ReservationValidator"
 
 function ReservationEdit() {
     let { reservationId } = useParams();
     const history = useHistory();
-    const [apiError, setAPIError] = useState(undefined);
+    const [apiError, setAPIError] = useState([undefined]);
     const [errors, setErrors] = useState([])
-    const [formData, setFormData] = useState([]);
+    const [formData, setFormData] = useState({});
+    let errorsList = [];
 
 //function to read the reservation data by ID, then load it into the form fields    
     function loadFormData() {
         const abortController = new AbortController();
         readReservation(reservationId, abortController.signal).then((reservation)=> 
         {   
-            return formatDate(reservation[0]);
+            return formatDate(reservation);
         })
         .then(setFormData)
         .catch(setAPIError)
@@ -26,6 +28,7 @@ function ReservationEdit() {
     useEffect(loadFormData, [reservationId]);
 
     const handleChange = ({ target }) => {
+      setErrors([])
       setFormData({
         ...formData,
         [target.name]: target.value,
@@ -40,39 +43,33 @@ function ReservationEdit() {
 //function for form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    //initialize errors to empty again
-    setErrors([])    
-    //create var for reservation time in datetime format
-    const reservationDateTime = new Date(formData.reservation_date + ' ' + formData.reservation_time)
-    //validate reservation datetime is in the future
-    if (reservationDateTime <= new Date()) {
-    setErrors(errors => [...errors,"Date must be in the future."] );
+    let abortController = new AbortController();
+    setErrors([])
+    try {
+      const errors = await reservationValidator(formData);
+      setErrors(errors)
+      if (!errors.length) {
+        await updateReservation(reservationId, formData, abortController)
+                .then((updatedRes)=>{
+                  const newDate = formatDate(updatedRes)
+                  history.push(`/dashboard/?date=${newDate.reservation_date}`)
+                })
+      }
     }
-    //validate reservation day is not a tuesday
-    if (reservationDateTime.getDay() === 2) {
-    setErrors(errors => [...errors,"Restaurant is closed on Tuesdays."] ); 
-    }
+    catch(apiError) {setAPIError(apiError)}
+    return () => abortController.abort();    
+    };
 
-    if (formData.reservation_time < "10:30:00" || formData.reservation_time > "21:30:00") {
-    setErrors(errors => [...errors, "Reservation must be between 10:30am - 9:30pm."])
-    }
+    //map errors to separate p elements for display
+    
+    if (errors.length) 
+    {errorsList = errors.map((error, index) => <p  key={index} className="alert alert-danger">{error}</p>);}
 
-    await updateReservation(reservationId, formData);
-    history.goBack() ;
-  };
 
-   //map errors to separate p elements for display
-   let errorsList = [];
-   if (errors.length) 
-   {errorsList = errors.map((error, index) => <p  key={index} className="alert alert-danger">{error}</p>);}
- 
- 
   //display of form elements
 return (
     <div className="container">
   <h2>Edit Reservation</h2>
-  <p>{apiError}</p>
       <form name="edit" onSubmit={handleSubmit}>
         <table>
         <thead>
