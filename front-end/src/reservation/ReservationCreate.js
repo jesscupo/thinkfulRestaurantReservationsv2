@@ -14,7 +14,7 @@ function ReservationCreate() {
     mobile_number: '',
     reservation_date: '',
     reservation_time: '',
-    people: ''
+    people: 0
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
@@ -22,13 +22,12 @@ function ReservationCreate() {
   const [errors, setErrors] = useState([])
 
 //set form data on change
-  const handleChange = ({ target }) => {
+  const handleChange = (e) => {
     setErrors([])
     setFormData({
       ...formData,
-      [target.name]: target.value,
+      [e.target.name]: e.target.value,
     });
-    if (target.name === "people") target.value = Number(target.value);
 
   };
 
@@ -49,7 +48,10 @@ function ReservationCreate() {
       const errors = await reservationValidator(formData);
       setErrors(errors)
       if (!errors.length) {
-        await createReservation(formData, abortController.signal)
+        await createReservation({
+                ...formData,
+                people:Number(formData.people),}
+                , abortController.signal)
                 .then((newRes)=>{
                   const newDate = formatDate(newRes)
                   history.push(`/dashboard/?date=${newDate.reservation_date}`)

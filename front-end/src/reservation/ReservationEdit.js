@@ -33,7 +33,6 @@ function ReservationEdit() {
         ...formData,
         [target.name]: target.value,
       });
-      if (target.name === "people") target.value = Number(target.value);
 
     };
       
@@ -41,6 +40,8 @@ function ReservationEdit() {
     const handleCancel = async (event) => {
         history.goBack()
     }
+
+    
 
 //function for form submission
   const handleSubmit = async (event) => {
@@ -51,7 +52,9 @@ function ReservationEdit() {
       const errors = await reservationValidator(formData);
       setErrors(errors)
       if (!errors.length) {
-        await updateReservation(reservationId, formData, abortController)
+        await updateReservation(reservationId, {
+          ...formData,
+          people:Number(formData.people),}, abortController)
                 .then((updatedRes)=>{
                   const newDate = formatDate(updatedRes)
                   history.push(`/dashboard/?date=${newDate.reservation_date}`)

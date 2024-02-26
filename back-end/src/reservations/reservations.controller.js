@@ -42,13 +42,14 @@ function validateDate(req, res, next) {
 
 function validateTime(req, res, next) {
   let time = req.body.data.reservation_time;
-  const displayPattern = /^\d{2}:\d{2}$/;
-  if (time.match(displayPattern)) {
+  const displayPatternMins = /^\d{2}:\d{2}$/;
+  const displayPatternSecs = /^\d{2}:\d{2}:\d{2}$/;
+  if (time.match(displayPatternMins) || time.match(displayPatternSecs)) {
     return next();
   }
   next({
     status: 400,
-    message: "Invalid reservation_time.",
+    message: `Invalid reservation_time. ${time}`,
   });
 }
 

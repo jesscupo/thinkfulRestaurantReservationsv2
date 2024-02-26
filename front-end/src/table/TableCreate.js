@@ -23,7 +23,6 @@ function TableCreate() {
       ...formData,
       [target.name]: target.value,
     });
-  if (target.name === "capacity") target.value = Number(target.value);
 
   };
 
@@ -45,7 +44,9 @@ function TableCreate() {
       const errors = await tableValidator(formData);
       setErrors(errors)
       if (!errors.length) {
-        await createTable(formData, abortController.signal)
+        await createTable({
+          ...formData,
+          capacity:Number(formData.capacity),}, abortController.signal)
                 .then((newTable)=>{
                   history.push(`/`)
                 })
