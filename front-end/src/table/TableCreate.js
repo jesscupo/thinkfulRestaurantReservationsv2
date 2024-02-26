@@ -23,6 +23,8 @@ function TableCreate() {
       ...formData,
       [target.name]: target.value,
     });
+  if (target.name === "capacity") target.value = Number(target.value);
+
   };
 
 //on cancel, go back to the previous page
@@ -86,6 +88,7 @@ function TableCreate() {
         <td> 
           <input
             id="capacity"
+            type="number"
             name="capacity"
             onChange={handleChange}
             value={formData.capacity}

@@ -52,7 +52,7 @@ export const Reservation = ({ reservation }) => {
         </div>
         <div>
           {!["seated", "cancelled"].includes(reservation.status)
-          ?<button onClick={handleCancel} className="btn btn-warning">Cancel</button>
+          ?<button data-reservation-id-cancel={reservation.reservation_id} onClick={handleCancel} className="btn btn-warning">Cancel</button>
           : ""}
         </div>
         

@@ -77,7 +77,7 @@ function Search() {
         </div>
     </form>
     <main className="container">
-      <section className="row">{resList}</section>
+      <section className="row">{resList.length>0 ? resList : "No reservations found"}</section>
      </main>
     <div>
         {searchError}

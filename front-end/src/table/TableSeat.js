@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { listTables, updateTable, updateReservationStatus } from "../utils/api";
+import { listTables, updateTable } from "../utils/api";
 import { useHistory, useParams} from "react-router-dom";
-import sortTablesByName from "../utils/sortTablesByName"
 import ErrorAlert from "../layout/ErrorAlert";
 
 
@@ -36,24 +35,19 @@ function TableSeat() {
     history.goBack()
   }
 
-//get list of tables for select list
-  function loadTables() {
+//load tables list on load  
+  useEffect(() => {
     const abortController = new AbortController();
-    setTablesError(null);
-    listTables(abortController.signal)
-      .then(setTables)
-      .catch(setTablesError)
+    listTables(abortController.signal).then(setTables).catch(setTablesError);
     return () => abortController.abort();
-  }
+  }, []);
 
-//on page load, load the tables for select list, sort the list by name
-  useEffect(loadTables);
-  tables.sort(sortTablesByName)
-  let tableList = []
-  //create select elements from table list
-  if (tables.length) 
-  {tableList = tables.map((table, index) => <option  value={table.table_id} key={index}>{table.table_name} - {table.capacity}</option>);}
-  
+
+    let tableList = []
+    //create select elements from table list
+  // if (tables.length) 
+  // {tableList = tables.map((table, index) => <option  value={table.table_id} key={index}>{table.table_name} - {table.capacity}</option>);}
+    
 
   //on submit, save the new reservation and then redirect to the /dashboard page
   const handleSubmit = async (event) => {
@@ -100,7 +94,10 @@ function TableSeat() {
             defaultValue="none"
             >
             <option value="none" disabled hidden></option>
-            {tableList}
+            {tables.map((table, index) => 
+            <option  value={table.table_id} 
+                      key={index}>{table.table_name} - {table.capacity}
+                      </option>)}
             </select>
         </td> 
             <td>

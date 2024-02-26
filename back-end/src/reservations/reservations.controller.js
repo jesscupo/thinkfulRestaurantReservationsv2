@@ -27,6 +27,32 @@ function bodyDataHas(propertyName) {
   };
 }
 
+function validateDate(req, res, next) {
+  const date = req.body.data.reservation_date;
+  const pattern = /^\d{4}[- ]?\d{2}[- ]?\d{2}$/;
+  if (date.match(pattern)) {
+    return next();
+  }
+
+  next({
+    status: 400,
+    message: "Invalid reservation_date.",
+  });
+}
+
+function validateTime(req, res, next) {
+  let time = req.body.data.reservation_time;
+  const displayPattern = /^\d{2}:\d{2}$/;
+  if (time.match(displayPattern)) {
+    return next();
+  }
+  next({
+    status: 400,
+    message: "Invalid reservation_time.",
+  });
+}
+
+
 //confirm that date is not a tuesday
 function notATuesday(req, res, next) {
   const { data: { reservation_date, reservation_time, people, status } = {} } = req.body;
@@ -43,16 +69,20 @@ function notATuesday(req, res, next) {
   });
 }
 
+
 //confirm date is not in the past
 function dateInPast(req, res, next) {
-  if (res.locals.datetime >= new Date()) {
-    return next();
-  }
+  const { data: { reservation_date, reservation_time } = {} } = req.body;
+  const parsedReservationDate = new Date(reservation_date + ' ' + reservation_time);
+
+  if (parsedReservationDate >= new Date()) {
+    return next();}
+
   next({
-    status: 400,
-    message: `The reservation_date or reservation_time must be in the future.`,
-  });
-}
+      status: 400,
+      message: `reservation_date and reservation_time must be in the future.`,
+    });
+  }
 
 //confirm time is in allowed range
 function validTimes(req, res, next) {
@@ -61,21 +91,21 @@ function validTimes(req, res, next) {
   }
   next({
     status: 400,
-    message: `Invalid reservation time.`,
+    message: `Invalid reservation_time.`,
   });
 }
 
 
 //confirm people is numeric
-function validPeople(req, res, next) {  
-  const peopleNum = res.locals.people;
-  if (isNaN(Number(peopleNum))) {
-    return next({
-      status: 400,
-      message: `people must be a number`,
-    });
+function validPeople(req, res, next) {
+  const peopleNum = req.body.data.people;
+  if (peopleNum && peopleNum > 0 && Number.isInteger(peopleNum)) {
+    return next();
   }
-  else {return next();}
+  next({
+    status: 400,
+    message: "people must be a number greater than zero.",
+  });
 }
 
 
@@ -172,6 +202,8 @@ module.exports = {
     bodyDataHas("reservation_date"), 
     bodyDataHas("reservation_time"), 
     bodyDataHas("people"), 
+    asyncErrorBoundary(validateDate),
+    asyncErrorBoundary(validateTime),
     asyncErrorBoundary(notATuesday), 
     asyncErrorBoundary(dateInPast), 
     asyncErrorBoundary(validTimes), 
@@ -187,6 +219,8 @@ module.exports = {
     bodyDataHas("reservation_date"), 
     bodyDataHas("reservation_time"), 
     bodyDataHas("people"), 
+    asyncErrorBoundary(validateDate),
+    asyncErrorBoundary(validateTime),
     asyncErrorBoundary(notATuesday), 
     asyncErrorBoundary(dateInPast), 
     asyncErrorBoundary(validTimes), 

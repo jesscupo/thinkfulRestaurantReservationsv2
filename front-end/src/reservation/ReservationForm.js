@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { createReservation } from "../utils/api";
 import { useHistory } from "react-router-dom";
 import { formatDate } from "../utils/format-reservation-date"
-import reservationValidator from ".//ReservationValidator"
 
-function ReservationCreate() {
+function ReservationForm( ) {
 
   const history = useHistory();
 //form is blank to start
+
   const initialFormState = {
     first_name: '',
     last_name: '',
@@ -18,7 +18,7 @@ function ReservationCreate() {
   };
 
   const [formData, setFormData] = useState({ ...initialFormState });
-  const [apiError, setAPIError] = useState([undefined]);
+
   const [errors, setErrors] = useState([])
 
 //set form data on change
@@ -28,8 +28,6 @@ function ReservationCreate() {
       ...formData,
       [target.name]: target.value,
     });
-    if (target.name === "people") target.value = Number(target.value);
-
   };
 
 //on cancel, go back to the previous page
@@ -41,25 +39,40 @@ function ReservationCreate() {
   //on submit, save the new reservation and then redirect to the /dashboard page
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let abortController = new AbortController();
+
     //initialize errors to empty again
     setErrors([])    
-
-    try {
-      const errors = await reservationValidator(formData);
-      setErrors(errors)
-      if (!errors.length) {
-        await createReservation(formData, abortController.signal)
-                .then((newRes)=>{
-                  const newDate = formatDate(newRes)
-                  history.push(`/dashboard/?date=${newDate.reservation_date}`)
-                })
-          }
+    //create var for reservation time in datetime format
+    const reservationDateTime = new Date(formData.reservation_date + ' ' + formData.reservation_time)
+    //validate reservation datetime is in the future
+    if (reservationDateTime <= new Date()) {
+      setErrors(errors => [...errors,"Date must be in the future."] );
+       }
+    //validate reservation day is not a tuesday
+    if (reservationDateTime.getDay() === 2) {
+      setErrors(errors => [...errors,"Restaurant is closed on Tuesdays."] ); 
     }
-    catch(apiError) {setAPIError(apiError)}
-    return () => abortController.abort();    
-    };
 
+    if (formData.reservation_time < "10:30:00" || formData.reservation_time > "21:30:00") {
+      setErrors(errors => [...errors, "Reservation must be between 10:30am - 9:30pm."])
+    }
+
+    console.log(formData)
+
+    if (formData.people === 0 || Number.isInteger(formData.people) === false) {
+      setErrors(errors => [...errors, "People must be a number greater than zero."])
+    }
+
+    createReservation(formData).then((newReservation)=>
+    { const newDate = formatDate(newReservation)
+      //restore form to blank
+      setFormData({ ...initialFormState });
+      //redirect to home
+    //  history.push(`/dashboard/?date=${newDate.reservation_date}`)
+      //log api errors
+    }).catch((error) => {console.log(error) })
+
+  };
 
   //map errors to separate p elements for display
   let errorsList = [];
@@ -141,7 +154,6 @@ function ReservationCreate() {
           <input
             id="people"
             name="people"
-            type="number"
             onChange={handleChange}
             value={formData.people}
             placeholder="#"
@@ -163,4 +175,4 @@ function ReservationCreate() {
   );
 }
 
-export default ReservationCreate;
+export default ReservationForm;

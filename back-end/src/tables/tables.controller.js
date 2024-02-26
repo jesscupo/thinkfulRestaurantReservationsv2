@@ -109,15 +109,16 @@ function validateTableName(req, res, next) {
 
 //confirm that capacity is >=1
 function validateTableCapacity(req, res, next) {
-  const { data: { capacity } = {} } = req.body;
-  if (capacity >= 1 && Number.isInteger(capacity)) {
+  const capacity = req.body.data.capacity;
+  if (capacity && capacity > 0 && Number.isInteger(capacity)) {
     return next();
   }
   next({
     status: 400,
-    message: `capacity must be at least one.`,
+    message: "capacity must be at least 1 person and must be a number.",
   });
 }
+
 
 //list handler
 async function list(req, res) {

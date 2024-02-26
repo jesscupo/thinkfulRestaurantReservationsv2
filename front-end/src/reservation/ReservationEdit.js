@@ -33,6 +33,8 @@ function ReservationEdit() {
         ...formData,
         [target.name]: target.value,
       });
+      if (target.name === "people") target.value = Number(target.value);
+
     };
       
     //on cancel, go back to the previous page
@@ -135,6 +137,7 @@ return (
             <input
               id="people"
               name="people"
+              type="number"
               onChange={handleChange}
               value={formData.people}
               required={true}
