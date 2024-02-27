@@ -65,19 +65,12 @@ function TableCreate() {
   //display of form elements
   return (
   <div className="container">
-<h2>Create Reservation</h2>
+    <h4>Create Table</h4>
     <form name="create" onSubmit={handleSubmit}>
-      <table>
-      <thead>
-          <tr>
-            <th>Table Name</th>
-            <th>Capacity</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td> 
-          <input
+      <div class="form-group">
+        <label for="table_name">Table Name</label>
+        <input
+            class="form-control"
             id="table_name"
             name="table_name"
             onChange={handleChange}
@@ -85,9 +78,11 @@ function TableCreate() {
             placeholder="Table Name"
             required={true}
           />
-        </td>
-        <td> 
-          <input
+      </div>
+      <div class="form-group">
+        <label for="capacity">Capacity</label>
+        <input
+            class="form-control"
             id="capacity"
             type="number"
             name="capacity"
@@ -96,17 +91,14 @@ function TableCreate() {
             placeholder="Capacity"
             required={true}
           />
-        </td>      
-            <td>
-              <button className="btn btn-primary" type="submit">Create</button>
-              <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
+      </div>
+      <div class="container">
+          <button className="btn btn-primary" type="submit">Create</button>
+          <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
+      </div>
+      <div class="container">
         {errorsList}
-        </div>
+      </div>
     </form>
     </div>
   );

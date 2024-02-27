@@ -26,13 +26,17 @@ export const Table = ({ table }) => {
   }
 
     return (
-    <div className="card">
-      <div className="card-body">
+      <div className="card border-dark mb-3">
+      <div class="card-body">
       <ErrorAlert error={err} />
-        <p className="card-text">{table.table_name}</p>
-        <p className="card-text">{table.capacity}</p>
-        <p data-table-id-status={table.table_id} className="card-text">{table.reservation_id ? "Occupied" : "Free"}</p>        
-        <div> {table.reservation_id ? <button data-table-id-finish={table.table_id} onClick={handleFinish} className="btn btn-warning">Finish</button>  : ""}  </div>        
+      <h5 class="card-title">{table.table_name}</h5>
+      <ul className="list-group">
+        <li className="list-group-item">{table.capacity}</li>
+        <li data-table-id-status={table.table_id} className="list-group-item">{table.reservation_id ? "Occupied" : "Free"}</li>
+      </ul>
+      <div className="card-body">       
+        <div> {table.reservation_id ? <a href="#" data-table-id-finish={table.table_id} onClick={handleFinish} className="card-link">Finish</a>  : ""}  </div>        
+      </div>
       </div>
     </div>
     );

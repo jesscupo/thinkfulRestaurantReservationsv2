@@ -72,94 +72,93 @@ function ReservationCreate() {
   //display of form elements
   return (
   <div className="container">
-<h2>Create Reservation</h2>
+  <h4>Create Reservation</h4>
     <form name="create" onSubmit={handleSubmit}>
-      <table>
-      <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Mobile Number</th>
-            <th>Reservation Date</th>
-            <th>Reservation Time</th>
-            <th>People</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td> 
-          <input
-            id="first_name"
-            name="first_name"
-            onChange={handleChange}
-            value={formData.first_name}
-            placeholder="First Name"
-            required={true}
-          />
-        </td>
-        <td> 
-          <input
-            id="last_name"
-            name="last_name"
-            onChange={handleChange}
-            value={formData.last_name}
-            placeholder="Last Name"
-            required={true}
-          />
-        </td>      
-        <td> 
-          <input type="tel"
-            id="mobile_number"
-            name="mobile_number"
-            onChange={handleChange}
-            value={formData.mobile_number}
-            placeholder="123-456-7890"
-            required={true}
-          />
-        </td> 
-        <td> 
-          <input type="date" 
-            placeholder="YYYY-MM-DD" 
-            pattern="\d{4}-\d{2}-\d{2}"
-            id="reservation_date"
-            name="reservation_date"
-            onChange={handleChange}
-            value={formData.reservation_date}
-            required={true}
-          />
-        </td>                     
-        <td> 
-          <input type="time" 
-            placeholder="HH:MM" 
-            pattern="[0-9]{2}:[0-9]{2}"
-            id="reservation_time"
-            name="reservation_time"
-            onChange={handleChange}
-            value={formData.reservation_time}
-            required={true}
-          />
-        </td>
-        <td> 
-          <input
-            id="people"
-            name="people"
-            type="number"
-            onChange={handleChange}
-            value={formData.people}
-            placeholder="#"
-            required={true}
-          />
-        </td>        
-            <td>
-              <button className="btn btn-primary" type="submit">Create</button>
-              <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
+      <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input 
+          class="form-control"
+          id="first_name"
+          name="first_name"
+          onChange={handleChange}
+          value={formData.first_name}
+          placeholder="First Name"
+          required={true}
+        />
+      </div>
+      <div class="form-group">
+        <label for="last_name">Last Name</label>
+        <input  
+          class="form-control"
+          id="last_name"
+          name="last_name"
+          onChange={handleChange}
+          value={formData.last_name}
+          placeholder="Last Name"
+          required={true}
+        />
+      </div>
+      <div class="form-group">
+        <label for="mobile_number">Mobile Number</label>
+        <input 
+          class="form-control"
+          type="tel"
+          id="mobile_number"
+          name="mobile_number"
+          onChange={handleChange}
+          value={formData.mobile_number}
+          placeholder="123-456-7890"
+          required={true}
+        />
+      </div> 
+      <div class="form-group">
+        <label for="reservation_date">Reservation Date</label>
+        <input 
+          class="form-control"
+          type="date" 
+          placeholder="YYYY-MM-DD" 
+          pattern="\d{4}-\d{2}-\d{2}"
+          id="reservation_date"
+          name="reservation_date"
+          onChange={handleChange}
+          value={formData.reservation_date}
+          required={true}
+        />
+      </div>
+      <div class="form-group">
+        <label for="reservation_time">Reservation Time</label>
+        <input 
+          class="form-control"
+          type="time" 
+          placeholder="HH:MM" 
+          pattern="[0-9]{2}:[0-9]{2}"
+          id="reservation_time"
+          name="reservation_time"
+          onChange={handleChange}
+          value={formData.reservation_time}
+          required={true}
+        />
+      </div>
+      <div class="form-group">
+        <label for="people">People</label>
+        <input
+          class="form-control"
+          id="people"
+          name="people"
+          type="number"
+          onChange={handleChange}
+          value={formData.people}
+          placeholder="#"
+          required={true}
+        />
+      </div>
+      <div class="container">
+        <button className="btn btn-primary" type="submit">Create</button>
+        <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
+      </div>
+      <div class="container">
         {errorsList}
-        </div>
+      </div>
     </form>
     </div>
   );

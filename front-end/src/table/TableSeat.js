@@ -74,19 +74,12 @@ function TableSeat() {
   //display of form elements
   return (
   <div className="container">
-<h2>Seat Table</h2>
-<ErrorAlert error={tablesError} />
-    <form name="create" onSubmit={handleSubmit}>
-      <table>
-      <thead>
-          <tr>
-            <th>Table Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td> 
-            <select
+  <h4>Seat Reservation</h4>
+  <form name="create" onSubmit={handleSubmit}>
+    <div class="form-group">
+      <label for="table_id">Table Number</label>
+      <select
+            class="form-control"
             id="table_id"
             name="table_id"
             onChange={handleChange}
@@ -98,18 +91,15 @@ function TableSeat() {
             <option  value={table.table_id} 
                       key={index}>{table.table_name} - {table.capacity}
                       </option>)}
-            </select>
-        </td> 
-            <td>
-              <button className="btn btn-primary" type="submit">Seat</button>
-              <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
+      </select>
+    </div>
+    <div class="container">
+        <button className="btn btn-primary" type="submit">Seat</button>
+        <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
+    </div>
+    <div class="container">
         {errorsList}
-        </div>
+    </div>
     </form>
     </div>
   );

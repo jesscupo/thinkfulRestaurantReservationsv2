@@ -74,88 +74,93 @@ function ReservationEdit() {
   //display of form elements
 return (
     <div className="container">
-  <h2>Edit Reservation</h2>
+    <h4>Update Reservation</h4>
       <form name="edit" onSubmit={handleSubmit}>
-        <table>
-        <thead>
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Mobile Number</th>
-              <th>Reservation Date</th>
-              <th>Reservation Time</th>
-              <th>People</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td> 
-            <input
-              id="first_name"
-              name="first_name"
-              onChange={handleChange}
-              value={formData.first_name}
-              required={true}
-            />
-          </td>
-          <td> 
-            <input
-              id="last_name"
-              name="last_name"
-              onChange={handleChange}
-              value={formData.last_name}
-              required={true}
-            />
-          </td>      
-          <td> 
-            <input type="tel"
-              id="mobile_number"
-              name="mobile_number"
-              onChange={handleChange}
-              value={formData.mobile_number}
-              required={true}
-            />
-          </td> 
-          <td> 
-            <input type="date" 
-              pattern="\d{4}-\d{2}-\d{2}"
-              id="reservation_date"
-              name="reservation_date"
-              onChange={handleChange}
-              value={formData.reservation_date}
-              required={true}
-            />
-          </td>                     
-          <td> 
-            <input type="time" 
-              pattern="[0-9]{2}:[0-9]{2}"
-              id="reservation_time"
-              name="reservation_time"
-              onChange={handleChange}
-              value={formData.reservation_time}
-              required={true}
-            />
-          </td>
-          <td> 
-            <input
-              id="people"
-              name="people"
-              type="number"
-              onChange={handleChange}
-              value={formData.people}
-              required={true}
-            />
-          </td>        
-              <td>
-                <button className="btn btn-primary" type="submit">Submit</button>
-                <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div>
+        <div className="form-group">
+          <label for="first_name">First Name</label>
+          <input 
+            className="form-control"
+            id="first_name"
+            name="first_name"
+            onChange={handleChange}
+            value={formData.first_name}
+            placeholder="First Name"
+            required={true}
+          />
+        </div>
+        <div className="form-group">
+          <label for="last_name">Last Name</label>
+          <input  
+            className="form-control"
+            id="last_name"
+            name="last_name"
+            onChange={handleChange}
+            value={formData.last_name}
+            placeholder="Last Name"
+            required={true}
+          />
+        </div>
+        <div className="form-group">
+          <label for="mobile_number">Mobile Number</label>
+          <input 
+            className="form-control"
+            type="tel"
+            id="mobile_number"
+            name="mobile_number"
+            onChange={handleChange}
+            value={formData.mobile_number}
+            placeholder="123-456-7890"
+            required={true}
+          />
+        </div> 
+        <div className="form-group">
+          <label for="reservation_date">Reservation Date</label>
+          <input 
+            className="form-control"
+            type="date" 
+            placeholder="YYYY-MM-DD" 
+            pattern="\d{4}-\d{2}-\d{2}"
+            id="reservation_date"
+            name="reservation_date"
+            onChange={handleChange}
+            value={formData.reservation_date}
+            required={true}
+          />
+        </div>
+        <div className="form-group">
+          <label for="reservation_time">Reservation Time</label>
+          <input 
+            className="form-control"
+            type="time" 
+            placeholder="HH:MM" 
+            pattern="[0-9]{2}:[0-9]{2}"
+            id="reservation_time"
+            name="reservation_time"
+            onChange={handleChange}
+            value={formData.reservation_time}
+            required={true}
+          />
+        </div>
+        <div className="form-group">
+          <label for="people">People</label>
+          <input
+            className="form-control"
+            id="people"
+            name="people"
+            type="number"
+            onChange={handleChange}
+            value={formData.people}
+            placeholder="#"
+            required={true}
+          />
+        </div>
+        <div className="container">
+            <button className="btn btn-primary" type="submit">Submit</button>
+            <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
+        </div>
+        <div className="container">
           {errorsList}
-          </div>
+        </div>
       </form>
       </div>
     );

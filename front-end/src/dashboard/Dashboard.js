@@ -60,20 +60,25 @@ function Dashboard( {date} ) {
 
   return (
     <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for {date}</h4>
+      <div class="vstack gap-3">
+      <div className="container">
+      <h2>Dashboard</h2>
+      <h4 className="row">Reservations: {date}</h4> 
+        {!resList.length ?  <h6 className="font-weight-light">No reservations on this day.</h6>
+                        : ""}
+        <ErrorAlert error={reservationsError} />
+        {resList}
       </div>
-      <ErrorAlert error={reservationsError} />
-      <main className="container">
-      <section className="row">{resList}</section>
-     </main>
-     <ErrorAlert error={tablesError} />
-     <main className="container">
-      <section className="row">{tableList}</section>
-     </main>
+      <div className="container">
+        <h4 className="row">Tables</h4>
+        <ErrorAlert error={tablesError} />
+        {tableList}
+      </div>
+     <div className="container">
      <Link to={`/dashboard/?date=${prevDay}`} className="btn btn-primary">Previous Day</Link>
      <Link to={`/dashboard/?date=${nextDay}`} className="btn btn-primary">Next Day</Link>
+    </div>
+    </div>
     </main>
   );
 }

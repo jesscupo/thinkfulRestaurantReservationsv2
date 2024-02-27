@@ -46,18 +46,13 @@ function Search() {
   //display of form elements
   return (
   <div className="container">
-<h2>Search by Phone Number</h2>
+  <h4>Search Reservations by Phone Number</h4>
     <form name="create" onSubmit={handleSubmit}>
-      <table>
-      <thead>
-          <tr>
-            <th>Mobile Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-        <td> 
-          <input type="tel"
+      <div className="form-group">
+        <label for="mobile_number">Mobile Number</label>
+        <input 
+            className="form-control"
+            type="tel"
             id="mobile_number"
             name="mobile_number"
             onChange={handleChange}
@@ -65,25 +60,21 @@ function Search() {
             placeholder="Enter a customer's phone number"
             required={true}
           />
-        </td> 
-            <td>
-              <button className="btn btn-primary" type="submit">Find</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div>
+      </div>
+      <div className="container">
+        <button className="btn btn-primary" type="submit">Find</button>
+      </div>
+      <div className="container">
         {errorsList}
-        </div>
+      </div>
     </form>
-    <main className="container">
+    <div className="container">
       <section className="row">{resList.length>0 ? resList : "No reservations found"}</section>
-     </main>
-    <div>
+     </div>
+    <div className="container">
         {searchError}
     </div>
     </div>
-
   );
 }
 

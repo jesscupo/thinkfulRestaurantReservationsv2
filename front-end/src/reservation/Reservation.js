@@ -30,33 +30,31 @@ export const Reservation = ({ reservation }) => {
 
 
     return (
-    <div className="card">
-      <div className="card-body">
+    <div className="card border-dark mb-3">
       <ErrorAlert error={err} />
-        <p className="card-text">{reservation.first_name}</p>
-        <p className="card-text">{reservation.last_name}</p>
-        <p className="card-text">{reservation.mobile_number}</p>
-        <p className="card-text">{reservation.reservation_date}</p>
-        <p className="card-text">{reservation.reservation_time}</p>
-        <p className="card-text">{reservation.people}</p>
-        <p className="card-text">{reservation.updated_at}</p>
-        <p className="card-text">{reservation.created_at}</p>
-        <p data-reservation-id-status={reservation.reservation_id} className="card-text">{reservation.status}</p>
-        <div> {reservation.status === 'booked' 
-              ? <Link to={`/reservations/${reservation.reservation_id}/seat`} className="btn btn-primary">Seat</Link>    
-              : "" }
-        </div>
-        <div> {reservation.status === 'booked' 
-              ? <Link to={`/reservations/${reservation.reservation_id}/edit`} className="btn btn-primary">Edit</Link>        
+      <div class="card-body">
+      <h5 class="card-title">{reservation.first_name} {reservation.last_name}</h5>
+      </div>
+      <ul className="list-group list-group-flush">
+        <li className="list-group-item">Mobile Number: {reservation.mobile_number}</li>
+        <li className="list-group-item">Reservation Date: {reservation.reservation_date}</li>
+        <li className="list-group-item">Reservation Time: {reservation.reservation_time}</li>
+        <li className="list-group-item">People: {reservation.people}</li>
+        <li className="list-group-item">Updated at: {reservation.updated_at}</li>
+        <li className="list-group-item">Created at: {reservation.created_at}</li>
+        <li className="list-group-item" data-reservation-id-status={reservation.reservation_id} >Status: {reservation.status}</li>
+      </ul>
+      <div className="card-body">
+           {reservation.status === 'booked' 
+                ? <a href={`/reservations/${reservation.reservation_id}/seat`} className="card-link">Seat</a>    
+                : "" }
+          {reservation.status === 'booked' 
+              ? <a href={`/reservations/${reservation.reservation_id}/edit`} className="card-link">Edit</a>        
               : "" }    
-        </div>
-        <div>
           {!["seated", "cancelled"].includes(reservation.status)
-          ?<button data-reservation-id-cancel={reservation.reservation_id} onClick={handleCancel} className="btn btn-warning">Cancel</button>
-          : ""}
-        </div>
-        
-     </div>
+              ?<a href="#" onClick={handleCancel} data-reservation-id-cancel={reservation.reservation_id} className="card-link">Cancel</a>
+              : ""}              
+      </div>
     </div>
     );
   
