@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import { Link } from "react-router-dom";
 import { updateReservationStatus } from "../utils/api";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
@@ -32,8 +31,8 @@ export const Reservation = ({ reservation }) => {
     return (
     <div className="card border-dark mb-3">
       <ErrorAlert error={err} />
-      <div class="card-body">
-      <h5 class="card-title">{reservation.first_name} {reservation.last_name}</h5>
+      <div className="card-body">
+      <h5 className="card-title">{reservation.first_name} {reservation.last_name}</h5>
       </div>
       <ul className="list-group list-group-flush">
         <li className="list-group-item">Mobile Number: {reservation.mobile_number}</li>
@@ -45,15 +44,17 @@ export const Reservation = ({ reservation }) => {
         <li className="list-group-item" data-reservation-id-status={reservation.reservation_id} >Status: {reservation.status}</li>
       </ul>
       <div className="card-body">
+      <div className="vstack mx-auto">
            {reservation.status === 'booked' 
-                ? <a href={`/reservations/${reservation.reservation_id}/seat`} className="card-link">Seat</a>    
+                ? <a href={`/reservations/${reservation.reservation_id}/seat`} className="btn btn-outline-success">Seat</a>    
                 : "" }
           {reservation.status === 'booked' 
-              ? <a href={`/reservations/${reservation.reservation_id}/edit`} className="card-link">Edit</a>        
-              : "" }    
+              ? <a href={`/reservations/${reservation.reservation_id}/edit`} className="btn btn-outline-secondary">Edit</a>        
+              : "" } 
           {!["seated", "cancelled"].includes(reservation.status)
-              ?<a href="#" onClick={handleCancel} data-reservation-id-cancel={reservation.reservation_id} className="card-link">Cancel</a>
-              : ""}              
+              ?<button onClick={handleCancel} data-reservation-id-cancel={reservation.reservation_id} className="btn btn-outline-danger">Cancel</button>
+              : ""}  
+      </div>         
       </div>
     </div>
     );

@@ -76,10 +76,10 @@ function TableSeat() {
   <div className="container">
   <h4>Seat Reservation</h4>
   <form name="create" onSubmit={handleSubmit}>
-    <div class="form-group">
+    <div className="form-group">
       <label for="table_id">Table Number</label>
       <select
-            class="form-control"
+            className="form-control"
             id="table_id"
             name="table_id"
             onChange={handleChange}
@@ -93,11 +93,11 @@ function TableSeat() {
                       </option>)}
       </select>
     </div>
-    <div class="container">
+    <div className="container">
         <button className="btn btn-primary" type="submit">Seat</button>
         <button onClick={handleCancel} className="btn btn-warning">Cancel</button>
     </div>
-    <div class="container">
+    <div className="container">
         {errorsList}
     </div>
     </form>

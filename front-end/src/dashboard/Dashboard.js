@@ -60,7 +60,7 @@ function Dashboard( {date} ) {
 
   return (
     <main>
-      <div class="vstack gap-3">
+      <div className="vstack gap-3">
       <div className="container">
       <h2>Dashboard</h2>
       <h4 className="row">Reservations: {date}</h4> 
