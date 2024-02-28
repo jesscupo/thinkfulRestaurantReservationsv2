@@ -138,7 +138,7 @@ function ReservationForm({reservationId}) {
         <input 
           className="form-control"
           type="tel"
-          pattern="^\d{3}-\d{3}-\d{4}$"
+          pattern="^\d{3}\d{3}\d{4}$|^\d{3}-\d{3}-\d{4}$"
           id="mobile_number"
           name="mobile_number"
           onChange={handleChange}
